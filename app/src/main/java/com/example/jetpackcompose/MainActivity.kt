@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetpackcompose.screens.contacts.ContactsScreen
 import com.example.jetpackcompose.screens.login.LoginScreen
 import com.example.jetpackcompose.screens.profile.ProfileScreen
+import com.example.jetpackcompose.screens.task.one.DetailsScreen
 import com.example.jetpackcompose.ui.theme.JetPackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +20,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JetPackComposeTheme {
-                MyApp()
+                //MyApp()
+                DetailsScreen()
             }
         }
     }
