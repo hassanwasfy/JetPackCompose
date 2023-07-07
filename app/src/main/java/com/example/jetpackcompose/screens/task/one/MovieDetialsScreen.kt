@@ -342,7 +342,7 @@ fun OneImage(painter: Painter){
 }
 
 @Composable
-fun ChipsRecycler(list: List<String>,modifier: Modifier){
+fun ChipsRecycler(list: List<String>,modifier: Modifier = Modifier){
     LazyRow(modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         items(list){

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,7 +48,7 @@ import com.example.jetpackcompose.ui.theme.Movie_Shine
 import com.example.jetpackcompose.ui.theme.Movie_Text60
 import com.example.jetpackcompose.ui.theme.Movie_White
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TestBuyScreen() {
     BuyScreen()
@@ -62,6 +61,7 @@ fun BuyScreen(
     val left = viewModel.left.collectAsState().value
     val center = viewModel.center.collectAsState().value
     val right = viewModel.right.collectAsState().value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -362,25 +362,3 @@ fun routeImage(status: ChairStatus): Int {
     }
 }
 
-data class Day(val dayNumber: Int, val dayName: String)
-class Days {
-    fun generateMonthDays(totalDaysInMonth: Int, startingDayName: String): List<Day> {
-        val daysList = mutableListOf<Day>()
-
-        val dayNames = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-
-        val startingDayIndex = dayNames.indexOf(startingDayName)
-
-        for (dayNumber in 1..totalDaysInMonth) {
-            val dayNameIndex = (startingDayIndex + dayNumber - 1) % 7
-            val dayName = dayNames[dayNameIndex]
-            daysList.add(Day(dayNumber, dayName))
-        }
-
-        return daysList
-    }
-
-    fun timeList(): List<String> {
-        return listOf("10:00", "12:30", "15:30", "18:00", "21:00", "12:00")
-    }
-}

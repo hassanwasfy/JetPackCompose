@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetpackcompose.screens.contacts.ContactsScreen
 import com.example.jetpackcompose.screens.login.LoginScreen
 import com.example.jetpackcompose.screens.profile.ProfileScreen
+import com.example.jetpackcompose.screens.task.three.HomeScreen
 import com.example.jetpackcompose.screens.task.two.BuyScreen
 import com.example.jetpackcompose.ui.theme.JetPackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +23,8 @@ class MainActivity : ComponentActivity() {
             JetPackComposeTheme {
                 //MyApp()
                 //DetailsScreen()
-                BuyScreen()
+                //BuyScreen()
+                HomeScreen()
             }
         }
     }
