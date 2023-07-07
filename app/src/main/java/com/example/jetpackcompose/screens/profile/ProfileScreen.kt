@@ -46,7 +46,7 @@ fun ProfileScreen(
         onChangeGender = viewModel::onChangeGender,
         onChangeMobile = viewModel::onChangeMobile,
         onChangeLocation = viewModel::onChangeLocation,
-        saveUserInformation = viewModel::saveUserInformation,
+        saveUserInformation = { navController.navigate("contacts") },
     )
 }
 

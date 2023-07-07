@@ -10,7 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetpackcompose.screens.contacts.ContactsScreen
 import com.example.jetpackcompose.screens.login.LoginScreen
 import com.example.jetpackcompose.screens.profile.ProfileScreen
-import com.example.jetpackcompose.screens.task.one.DetailsScreen
+import com.example.jetpackcompose.screens.task.two.BuyScreen
 import com.example.jetpackcompose.ui.theme.JetPackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             JetPackComposeTheme {
                 //MyApp()
-                DetailsScreen()
+                //DetailsScreen()
+                BuyScreen()
             }
         }
     }
@@ -30,9 +31,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp(){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "first"){
-        composable("first"){ LoginScreen(navController) }
-        composable("details"){ ProfileScreen(navController) }
+    NavHost(navController = navController, startDestination = "login"){
+        composable("login"){ LoginScreen(navController) }
+        composable("sign"){ ProfileScreen(navController) }
+        composable("contacts"){ ContactsScreen() }
     }
-    //ContactsScreen()
 }

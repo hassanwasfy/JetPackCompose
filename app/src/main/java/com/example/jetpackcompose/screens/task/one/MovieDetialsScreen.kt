@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -73,7 +72,7 @@ fun DetailsScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            painter = painterResource(id = R.drawable.image),
+            painter = painterResource(id = R.drawable.image_poster),
             contentDescription = "Image poster",
             contentScale = ContentScale.FillWidth
         )
@@ -147,7 +146,7 @@ fun DetailsScreen(
                     actors,
                     tags,
                     title,
-                state) = createRefs()
+                    state) = createRefs()
 
                 Row(modifier = Modifier
                     .fillMaxWidth()
@@ -173,18 +172,18 @@ fun DetailsScreen(
                 ChipsRecycler(list = viewModel
                     .movie.tags,
                     modifier = Modifier.constrainAs(tags){
-                    bottom.linkTo(actors.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
+                        bottom.linkTo(actors.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
                 )
 
                 ImagesRecycler(list = viewModel.movie.actors,
                     modifier = Modifier.constrainAs(actors){
-                    bottom.linkTo(description.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
+                        bottom.linkTo(description.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    })
 
                 MovieDescription(text = viewModel.movie.description,
                     modifier = Modifier.constrainAs(description){
@@ -279,11 +278,11 @@ fun BookingLabel(label: String,modifier: Modifier) {
 
 
 @Composable
-fun CloseIcon() {
+fun CloseIcon(modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Image(
             painter = painterResource(id = R.drawable.close), contentDescription = "close Icon"
@@ -336,10 +335,10 @@ fun ImagesRecycler(list: List<String>,modifier: Modifier){
 @Composable
 fun OneImage(painter: Painter){
     Image(painter = painter, contentDescription = "actor image",
-    modifier = Modifier
-        .size(60.dp)
-        .clip(shape = CircleShape)
-        .background(color = Color.Red))
+        modifier = Modifier
+            .size(60.dp)
+            .clip(shape = CircleShape)
+            .background(color = Color.Red))
 }
 
 @Composable

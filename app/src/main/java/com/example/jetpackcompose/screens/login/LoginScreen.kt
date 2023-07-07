@@ -39,7 +39,7 @@ fun LoginScreen(
         onChangePassword = viewModel::onChangePassword,
         onForgetPassword = viewModel::onForgetPassword,
         onLoginClicked = viewModel::onLogin,
-        onSignupClicked = {navController.navigate("details")}
+        onSignupClicked = {navController.navigate("sign")}
     )
 }
 
