@@ -2,16 +2,17 @@ package com.example.jetpackcompose.screens.task.three
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,37 +21,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import com.example.jetpackcompose.R
 import com.example.jetpackcompose.screens.task.one.ChipsRecycler
 import com.example.jetpackcompose.ui.theme.Movie_Orange
-import com.example.jetpackcompose.ui.theme.Movie_Shine
 import com.example.jetpackcompose.ui.theme.Movie_White
+import kotlin.math.absoluteValue
 
 
 @Preview(showSystemUi = true, showBackground = true)
@@ -63,90 +63,144 @@ fun TestHomeScreen() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen() {
-    Scaffold(bottomBar = { BottomBar() }, containerColor = Movie_Shine) {
-        val movies = MovieFactory().movies
-        val state = rememberPagerState()
-        Box(modifier = Modifier) {
-            Image(
-                painter = painterResource(
-                    id = movies[state.currentPage].poster
-                ),
-                contentDescription = "",
-                modifier = Modifier
-                    .clipToBounds()
-                    .blur(32.dp)
-                    .fillMaxWidth(1.5f)
-                    .fillMaxHeight(0.5f),
-                alpha = 0.8f,
-            )
-            Column {
-                Spacer(modifier = Modifier.height(32.dp))
-                Row(
-                    modifier = Modifier.height(80.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Header()
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-                HorizontalPager(
-                    pageCount = movies.size, modifier = Modifier.fillMaxWidth(), state = state
-                ) { index ->
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        val offset = (state.currentPage - index) + state.currentPageOffsetFraction
-                        val size by animateFloatAsState(
-                            targetValue = if (offset != 0.0f) 2f else 1f,
-                            animationSpec = tween(durationMillis = 300)
+    val movies = MovieFactory().movies
+    val state = rememberPagerState(initialPage = 1, pageCount = {movies.size})
+    Box(modifier = Modifier) {
+        Image(
+            painter = painterResource(
+                id = movies[state.currentPage].poster
+            ),
+            contentDescription = "",
+            modifier = Modifier
+                .clipToBounds()
+                .blur(24.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.White,
+                            Color.Transparent,
                         )
-                        val currentMovie = movies[index]
-                        Image(painter = painterResource(id = currentMovie.poster),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .clip(shape = RoundedCornerShape(corner = CornerSize(24.dp)))
-                                .graphicsLayer {
-                                    scaleX = size
-                                    scaleY = size
-                                })
-
-                        MovieLengthLabel(length = currentMovie.length)
-                        Text(
-                            text = currentMovie.name,
-                            fontSize = 24.sp,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                        ChipsRecycler(
-                            list = currentMovie.tags, modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    }
-                }
+                    )
+                )
+                .fillMaxWidth(1.5f)
+                .fillMaxHeight(0.5f),
+            contentScale = ContentScale.FillBounds,
+            alpha = 0.8f,
+        )
+        Column {
+            Spacer(modifier = Modifier.height(32.dp))
+            Row(
+                modifier = Modifier.height(80.dp), verticalAlignment = Alignment.CenterVertically
+            ) {
+                Header()
             }
+            Spacer(modifier = Modifier.height(24.dp))
+
+            ViewPagerCards(modifier = Modifier,movies = movies, pagerState = state)
+
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceAround
+            ) {
+                MovieLengthLabel(length = movies[state.currentPage].length)
+                Text(
+                    text = movies[state.currentPage].name,
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                ChipsRecycler(
+                    list = movies[state.currentPage].tags,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                OneBottomItem(icon = R.drawable.ic_video_play)
+                OneBottomItem(icon = R.drawable.ic_search)
+                OneBottomItem(icon = R.drawable.ic_ticket)
+                OneBottomItem(icon = R.drawable.ic_user)
+            }
+        }
+    }
+
+}
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ViewPagerCards(
+    modifier: Modifier = Modifier,
+    movies: List<ShowMovie>,
+    pagerState: PagerState,
+) {
+    HorizontalPager(
+        modifier = modifier,
+        state = pagerState,
+        contentPadding = PaddingValues(start = 42.dp, end = 42.dp),
+        pageSpacing = 16.dp
+    ) { page ->
+        Card(
+            modifier = Modifier
+                .aspectRatio(4f / 5.5f)
+                .graphicsLayer {
+                    val pageOffset =
+                        (pagerState
+                            .currentPage - page
+                                + pagerState.currentPageOffsetFraction)
+                            .absoluteValue
+
+                    alpha = lerp(
+                        start = 0.8f,
+                        stop = 1f,
+                        fraction = 1f - pageOffset.coerceAtLeast(0f)
+                    )
+
+                    scaleY = lerp(
+                        start = 0.85f,
+                        stop = 1f,
+                        fraction = 1f - pageOffset.coerceAtLeast(0f)
+                    )
+                },
+            elevation = CardDefaults.cardElevation(0.dp),
+            shape = RoundedCornerShape(32.dp)
+        ) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                painter = painterResource(movies[page].poster),
+                contentDescription = ""
+            )
         }
     }
 }
 
 @Composable
-fun BottomBar() {
-    NavigationBar(
-        modifier = Modifier, containerColor = Movie_Shine
+fun OneBottomItem(icon: Int) {
+    Card(
+        modifier = Modifier.size(40.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        NavigationBarItem(icon = { painterResource(id = R.drawable.ic_video_play) },
-            label = { },
-            selected = true,
-            onClick = { })
-        NavigationBarItem(icon = { painterResource(id = R.drawable.ic_search) },
-            label = { },
-            selected = false,
-            onClick = { })
-        NavigationBarItem(icon = { painterResource(id = R.drawable.ic_ticket) },
-            label = { },
-            selected = false,
-            onClick = { })
-        NavigationBarItem(icon = { painterResource(id = R.drawable.ic_user) },
-            label = { },
-            selected = false,
-            onClick = { })
+        Box(
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = "",
+                alignment = Alignment.Center
+            )
+        }
     }
 }
+
 
 @Composable
 fun Header(modifier: Modifier = Modifier) {
@@ -253,18 +307,6 @@ data class ShowMovie(
 
 class MovieFactory {
     val movies = listOf(
-        ShowMovie(
-            "Morbius",
-            R.drawable.mv_1,
-            "2h 33m",
-            listOf("Fantasy", "Action", "Sci Fi", "Horror")
-        ),
-        ShowMovie(
-            "Dr Strange\nMultiverse om Madness",
-            R.drawable.mv_2,
-            "2h 33m",
-            listOf("Sci Fi", "Horror")
-        ),
         ShowMovie(
             "Dr Strange\nMultiverse om Madness",
             R.drawable.mv_3,
